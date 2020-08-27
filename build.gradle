@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+apply plugin: 'application'
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+javafx {
+    version = "14"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing' ]
+}
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+
+        resources {
+            srcDirs = ["src/main/java"]
+        }
+    }
+    test {
+        java {
+            srcDirs = ["src/test/java"]
+        }
+        resources {
+            srcDirs = ["src/test/resources"]
+        }
+    }
+}
+application {
+    mainClassName = "JabMapMain"
+}
+
+task downloadDependencies {
+    description "Pre-downloads *most* dependencies"
+    doLast {
+        configurations.getAsMap().each { name, config ->
+            println "Retrieving dependencies for $name"
+            try {
+                config.files
+            } catch (e) {
+                // some cannot be resolved, just log them
+                project.logger.info e.message
+            }
+        }
+    }
+}
